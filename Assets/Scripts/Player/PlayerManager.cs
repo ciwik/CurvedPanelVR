@@ -14,17 +14,17 @@ namespace Player
         [SerializeField]
         private int _itemsCountMax = 7;
         [SerializeField]
-        private Texture2D _errorIcon;
+        private Texture2D _errorIcon;        
 
+        private LoadingIndicator _loadingIndicator;
         private ItemViewInitializer _itemViewInitializer;
-
-        private bool isWorking;
 
         void Awake()
         {
             Input.backButtonLeavesApp = true;
 
             _itemViewInitializer = GetComponent<ItemViewInitializer>();
+            _loadingIndicator = GetComponentInChildren<LoadingIndicator>();
             _itemViewInitializer.ItemsCount = _itemsCountMax;
             _itemViewInitializer.Center = GetComponent<Camera>().transform.position;
         }
@@ -34,14 +34,12 @@ namespace Player
             ItemsLoader loader = gameObject.AddComponent<ItemsLoader>();
             int itemsCount = Random.Range(_itemsCountMin, _itemsCountMax);
             ItemsLoaderRequest request = new ItemsLoaderRequest(Values.ItemsUrl, itemsCount);
-            isWorking = true;
+            _loadingIndicator.enabled = true;
             loader.LoadItemsAsync(request, OnItemsLoaded);
         }
 
         private void OnItemsLoaded(ItemsLoaderResponse itemsLoaderResponse)
         {
-            isWorking = false;
-
             var itemViews = _itemViewInitializer.CreateItemViews(_itemsCountMax);
 
             int i = 0;
@@ -59,15 +57,8 @@ namespace Player
                 }
                 i++;
             }
-        }
 
-        void Update()
-        {
-            if (isWorking)
-            {
-                //TODO: loading spinner
-                //Debug.Log("Loading...");
-            }
+            _loadingIndicator.enabled = false;
         }
     }
 }
