@@ -106,9 +106,9 @@ namespace View
             int trianglesCount = 3 * 2 * _quadPolygonsPerSegment;
 
             float D = 2 * radius;                                   //Diameter
-            float alpha = centerAngle / 2f;                         //Angle
+            float alpha = centerAngle * Mathf.Deg2Rad / 2f;         //Angle
             float L = D * alpha;                                    //Arc length
-            float X = D * Mathf.Sin(alpha * Mathf.Deg2Rad);         //Chord
+            float X = D * Mathf.Sin(alpha);                         //Chord
             float dX = X / _quadPolygonsPerSegment;                 //Chord step
             float Y = L * ratio;                                    //Height
 
