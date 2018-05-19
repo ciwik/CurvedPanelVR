@@ -1,17 +1,21 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Test : MonoBehaviour {
 
-    public float AngleRange = 120f;
-    public float DistanceToItems = 5f;
     public int ItemsCountMin = 2;
     public int ItemsCountMax = 7;
-    public Vector3 ObserverPosition;
+
+    public ItemViewFactory ItemViewFactory;
+    public Texture2D ErrorIcon;
 
     private bool isWorking;
-    
+
+    void Awake()
+    {
+        ItemViewFactory.ItemsCount = ItemsCountMax;
+    }
+
     void Start ()
 	{
 	    ItemsLoader loader = gameObject.AddComponent<ItemsLoader>();
@@ -24,6 +28,24 @@ public class Test : MonoBehaviour {
     private void OnItemsLoaded(ItemsLoaderResponse itemsLoaderResponse)
     {
         isWorking = false;
+
+        var itemViews = ItemViewFactory.CreateItemViews(ItemsCountMax);
+
+        int i = 0;
+        foreach (var item in itemsLoaderResponse.Items)
+        {
+            string errorMessage;
+            Texture2D texture;
+            if (itemsLoaderResponse.IconLoadingErrors.TryGetValue(item.Id, out errorMessage))
+            {
+                ItemViewFactory.DecorateItemView(itemViews[i], $"{item.Title}\n{errorMessage}", ErrorIcon);
+            }
+            else if (itemsLoaderResponse.Icons.TryGetValue(item.Id, out texture))
+            {
+                ItemViewFactory.DecorateItemView(itemViews[i], item.Title, texture);
+            }
+            i++;
+        }
     }
 
     void Update()

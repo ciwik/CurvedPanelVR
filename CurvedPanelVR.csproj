@@ -628,11 +628,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Item.cs" />
-    <Compile Include="Assets\Scripts\ItemsLoader.cs" />
-    <Compile Include="Assets\Scripts\ItemsLoaderRequest.cs" />
-    <Compile Include="Assets\Scripts\ItemsLoaderResponse.cs" />
+    <Compile Include="Assets\Scripts\Loading\ItemsLoader.cs" />
+    <Compile Include="Assets\Scripts\Loading\ItemsLoaderRequest.cs" />
+    <Compile Include="Assets\Scripts\Loading\ItemsLoaderResponse.cs" />
+    <Compile Include="Assets\Scripts\Model\Item.cs" />
     <Compile Include="Assets\Scripts\Values.cs" />
+    <Compile Include="Assets\Scripts\View\ItemView.cs" />
+    <Compile Include="Assets\Scripts\View\ItemViewFactory.cs" />
     <Compile Include="Assets\Test.cs" />
   </ItemGroup>
   <ItemGroup>
