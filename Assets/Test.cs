@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
+[RequireComponent(typeof(Camera))]
 public class Test : MonoBehaviour {
 
     public int ItemsCountMin = 2;
@@ -14,6 +15,7 @@ public class Test : MonoBehaviour {
     void Awake()
     {
         ItemViewFactory.ItemsCount = ItemsCountMax;
+        ItemViewFactory.ObserverPosition = GetComponent<Camera>().transform.position;
     }
 
     void Start ()
