@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
+//TODO: rename to ObserverManager, PlayerManager, etc
 [RequireComponent(typeof(Camera))]
 public class Test : MonoBehaviour {
 
@@ -14,6 +15,8 @@ public class Test : MonoBehaviour {
 
     void Awake()
     {
+        Input.backButtonLeavesApp = true;
+
         ItemViewFactory.ItemsCount = ItemsCountMax;
         ItemViewFactory.ObserverPosition = GetComponent<Camera>().transform.position;
     }
@@ -54,6 +57,7 @@ public class Test : MonoBehaviour {
     {
         if (isWorking)
         {
+            //TODO: loading spinner
             //Debug.Log("Loading...");
         }
     }
