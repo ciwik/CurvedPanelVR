@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
-using Debug = UnityEngine.Debug;
 
 public class ItemsLoader : MonoBehaviour
 {
@@ -19,8 +17,6 @@ public class ItemsLoader : MonoBehaviour
 
     private IEnumerator LoadItemsRoutine(ItemsLoaderRequest loaderRequest, Action<ItemsLoaderResponse> callback)
     {
-        Stopwatch stopwatch = Stopwatch.StartNew();
-
         using (var request = UnityWebRequest.Get(loaderRequest.Url))
         {
             yield return request.SendWebRequest();
@@ -64,9 +60,6 @@ public class ItemsLoader : MonoBehaviour
             }
             callback(new ItemsLoaderResponse(isError, items, icons, iconLoadingErrors));                        
         }
-
-        stopwatch.Stop();
-        Debug.Log(stopwatch.ElapsedMilliseconds);
     }
 
     private IEnumerator LoadIconRoutine(string url, Action<Texture2D> successCallback, Action<string> errorCallback)

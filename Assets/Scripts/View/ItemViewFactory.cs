@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemViewFactory : MonoBehaviour {
@@ -8,7 +6,7 @@ public class ItemViewFactory : MonoBehaviour {
     public float AngleRange = 120f;
     public float DistanceToItems = 5f;
     public int ItemsCount;
-    public int QuadPolygonsPerSegment = 50;
+    public int QuadPolygonsPerSegment = 25;
     public Vector3 ObserverPosition;
     public GameObject ItemPrefab;
 
@@ -27,16 +25,15 @@ public class ItemViewFactory : MonoBehaviour {
 
         List<ItemView> result = new List<ItemView>();
 
-        float diffAngle = Mathf.Deg2Rad * _anglePerItem;
         float angle = 0;
 
         if (ItemsCount % 2 == 0)
         {
-            angle = diffAngle / 2;
+            angle = _anglePerItem / 2;
         }
 
         int iterationsCount = ItemsCount / 2 + (ItemsCount % 2 == 0 ? 0 : 1);
-        for (int i = 0; i < iterationsCount; i++, angle += diffAngle)
+        for (int i = 0; i < iterationsCount; i++, angle += _anglePerItem)
         {
             result.Add(InitItemView(angle));
             if (angle > 0f)
@@ -50,11 +47,15 @@ public class ItemViewFactory : MonoBehaviour {
 
     private ItemView InitItemView(float angle)
     {
-        Vector3 direction = DistanceToItems * new Vector3(Mathf.Sin(angle), 0, Mathf.Cos(Mathf.Abs(angle))).normalized;
+        Vector3 direction = DistanceToItems * 
+            new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 
+            0, 
+            Mathf.Cos(Mathf.Abs(angle * Mathf.Deg2Rad)))
+            .normalized;
         Vector3 itemPosition = ObserverPosition + direction;
-        GameObject instance = Instantiate(ItemPrefab);        
-        instance.transform.position = itemPosition;
-        instance.transform.forward = -(ObserverPosition - itemPosition);    //move to DecorateItemView
+        GameObject instance = Instantiate(ItemPrefab);
+        instance.transform.position = ObserverPosition;
+        instance.transform.forward = itemPosition - ObserverPosition;
         return instance.AddComponent<ItemView>();        
     }
 
@@ -65,9 +66,9 @@ public class ItemViewFactory : MonoBehaviour {
 
         float textureRatio = texture.height / (float) texture.width;
 
-        Mesh mesh = CreateMesh(_anglePerItem, DistanceToItems, textureRatio);
+        Mesh mesh = CreateMesh(_anglePerItem, DistanceToItems, textureRatio);        
         MeshRenderer meshRenderer = itemView.gameObject.GetComponent<MeshRenderer>();
-        meshRenderer.materials[0].SetTexture(Values.TextureMaterialPropertyName, texture);              
+        meshRenderer.materials[0].SetTexture(Values.TextureMaterialPropertyName, texture);
         itemView.gameObject.GetComponent<MeshFilter>().mesh = mesh;        
     }
 
@@ -136,6 +137,7 @@ public class ItemViewFactory : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
+
         return mesh;
     }
 }

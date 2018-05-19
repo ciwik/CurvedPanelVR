@@ -54,7 +54,7 @@ public class Test : MonoBehaviour {
     {
         if (isWorking)
         {
-            Debug.Log("Loading...");
+            //Debug.Log("Loading...");
         }
     }
 }

@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AngleRange: 360
-  DistanceToItems: 1
+  DistanceToItems: 2
   ItemsCount: 0
   QuadPolygonsPerSegment: 50
   ObserverPosition: {x: 0, y: 0, z: 0}
@@ -524,7 +524,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenderCamera: {fileID: 753977211}
   UiText: {fileID: 1728222706}
-  RenderTexture: {fileID: 8400000, guid: 1d61e6f69ab2bd6428219edcf0df7506, type: 2}
 --- !u!1 &1273581249
 GameObject:
   m_ObjectHideFlags: 0
