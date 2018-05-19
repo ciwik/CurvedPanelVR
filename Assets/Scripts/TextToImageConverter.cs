@@ -6,14 +6,15 @@ public class TextToImageConverter : MonoBehaviour
     public Camera RenderCamera;
     public Text UiText;
 
-    public Texture2D RenderTextAsTexture(string text)
+    public Texture2D RenderTextAsTexture(string text, int width)
     {
         UiText.text = text;
         RenderTexture currentActiveRenderTexture = RenderTexture.active;
         RenderTexture.active = RenderCamera.targetTexture;
         RenderCamera.Render();
-        Texture2D texture = new Texture2D(RenderCamera.targetTexture.width, RenderCamera.targetTexture.height);
-        texture.ReadPixels(RenderCamera.pixelRect, 0, 0);
+        Texture2D texture = new Texture2D(width, RenderCamera.targetTexture.height);
+        int diff = RenderCamera.targetTexture.width - width;
+        texture.ReadPixels(new Rect(diff / 2, 0, width, RenderCamera.targetTexture.height), 0, 0);
         RenderTexture.active = currentActiveRenderTexture;
         return texture;
     }

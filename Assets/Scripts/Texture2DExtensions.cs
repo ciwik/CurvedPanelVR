@@ -4,15 +4,6 @@ public static class Texture2DExtensions {
 
     public static Texture2D Merge(this Texture2D lower, Texture2D upper)
     {
-        //TODO: fix it
-        if (upper.width != lower.width)
-        {
-            Texture2D temp = new Texture2D(upper.width, lower.height);
-            temp.LoadRawTextureData(lower.GetRawTextureData());
-            temp.Resize(upper.width, lower.height);
-            lower = temp;
-        }
-
         Texture2D result = new Texture2D(lower.width, upper.height + lower.height);
         for (int x = 0; x < lower.width; x++)
         {

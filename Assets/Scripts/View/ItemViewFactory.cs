@@ -61,7 +61,7 @@ public class ItemViewFactory : MonoBehaviour {
 
     public void DecorateItemView(ItemView itemView, string text, Texture2D texture)
     {
-        Texture2D textTexture = CreateTextureByText(text);
+        Texture2D textTexture = CreateTextureByText(text, texture.width);
         texture = textTexture.Merge(texture);
 
         float textureRatio = texture.height / (float) texture.width;
@@ -72,9 +72,9 @@ public class ItemViewFactory : MonoBehaviour {
         itemView.gameObject.GetComponent<MeshFilter>().mesh = mesh;        
     }
 
-    private Texture2D CreateTextureByText(string text)
+    private Texture2D CreateTextureByText(string text, int width)
     {
-        return _textToImageConverter.RenderTextAsTexture(text);
+        return _textToImageConverter.RenderTextAsTexture(text, width);
     }
 
     private Vector2 GetRotatedRadius(float t)
