@@ -632,6 +632,8 @@
     <Compile Include="Assets\Scripts\Loading\ItemsLoaderRequest.cs" />
     <Compile Include="Assets\Scripts\Loading\ItemsLoaderResponse.cs" />
     <Compile Include="Assets\Scripts\Model\Item.cs" />
+    <Compile Include="Assets\Scripts\TextToImageConverter.cs" />
+    <Compile Include="Assets\Scripts\Texture2DExtensions.cs" />
     <Compile Include="Assets\Scripts\Values.cs" />
     <Compile Include="Assets\Scripts\View\ItemView.cs" />
     <Compile Include="Assets\Scripts\View\ItemViewFactory.cs" />

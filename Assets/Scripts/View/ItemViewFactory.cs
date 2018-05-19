@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemViewFactory : MonoBehaviour {
@@ -11,6 +13,12 @@ public class ItemViewFactory : MonoBehaviour {
     public GameObject ItemPrefab;
 
     private float _anglePerItem;
+    private TextToImageConverter _textToImageConverter;
+
+    void Awake()
+    {
+        _textToImageConverter = FindObjectOfType<TextToImageConverter>();
+    }
 
     public ItemView[] CreateItemViews(int itemsCount)
     {
@@ -52,12 +60,20 @@ public class ItemViewFactory : MonoBehaviour {
 
     public void DecorateItemView(ItemView itemView, string text, Texture2D texture)
     {
+        Texture2D textTexture = CreateTextureByText(text);
+        texture = textTexture.Merge(texture);
+
         float textureRatio = texture.height / (float) texture.width;
 
         Mesh mesh = CreateMesh(_anglePerItem, DistanceToItems, textureRatio);
         MeshRenderer meshRenderer = itemView.gameObject.GetComponent<MeshRenderer>();
         meshRenderer.materials[0].SetTexture(Values.TextureMaterialPropertyName, texture);              
         itemView.gameObject.GetComponent<MeshFilter>().mesh = mesh;        
+    }
+
+    private Texture2D CreateTextureByText(string text)
+    {
+        return _textToImageConverter.RenderTextAsTexture(text);
     }
 
     private Vector2 GetRotatedRadius(float t)

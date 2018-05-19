@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Debug = UnityEngine.Debug;
 
-public class ItemsLoader : MonoBehaviour {
+public class ItemsLoader : MonoBehaviour
+{
 
     public Coroutine LoadItems(ItemsLoaderRequest loaderRequest, Action<ItemsLoaderResponse> callback)
     {

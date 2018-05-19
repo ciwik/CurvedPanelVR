@@ -6,9 +6,9 @@ public class Test : MonoBehaviour {
 
     public int ItemsCountMin = 2;
     public int ItemsCountMax = 7;
+    public Texture2D ErrorIcon;
 
     public ItemViewFactory ItemViewFactory;
-    public Texture2D ErrorIcon;
 
     private bool isWorking;
 
