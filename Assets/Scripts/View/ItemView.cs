@@ -3,6 +3,6 @@
 namespace View
 {
     public class ItemView : MonoBehaviour {
-	    //It is just marker script
+	    //It is just a marker script
     }
 }

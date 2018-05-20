@@ -11,12 +11,6 @@ namespace Data.Loading
 {
     public class ItemsLoader : MonoBehaviour
     {
-        /// <summary>
-        /// Load items and icons asynchronously
-        /// </summary>
-        /// <param name="loaderRequest"></param>
-        /// <param name="callback">Called when loading is complete</param>
-        /// <returns></returns>
         public Coroutine LoadItemsAsync(ItemsLoaderRequest loaderRequest, Action<ItemsLoaderResponse> callback)
         {
             return StartCoroutine(LoadItemsRoutine(loaderRequest, callback));

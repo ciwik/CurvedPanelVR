@@ -6,7 +6,6 @@ using Random = UnityEngine.Random;
 
 namespace Player
 {
-    [RequireComponent(typeof(Camera))]
     public class PlayerManager : MonoBehaviour {
 
         [SerializeField]
@@ -23,13 +22,17 @@ namespace Player
         {
             Input.backButtonLeavesApp = true;
 
-            _itemViewInitializer = GetComponent<ItemViewInitializer>();
+            _itemViewInitializer = FindObjectOfType<ItemViewInitializer>();
             _loadingIndicator = GetComponentInChildren<LoadingIndicator>();
-            _itemViewInitializer.ItemsCount = _itemsCountMax;
-            _itemViewInitializer.Center = GetComponent<Camera>().transform.position;
+            _itemViewInitializer.Center = transform.position;
         }
 
         void Start ()
+        {
+           Load();
+        }
+
+        private void Load()
         {
             ItemsLoader loader = gameObject.AddComponent<ItemsLoader>();
             int itemsCount = Random.Range(_itemsCountMin, _itemsCountMax);
@@ -40,14 +43,15 @@ namespace Player
 
         private void OnItemsLoaded(ItemsLoaderResponse itemsLoaderResponse)
         {
-            var itemViews = _itemViewInitializer.CreateItemViews(_itemsCountMax);
+            var itemViews = _itemViewInitializer.CreateItemViews(itemsLoaderResponse.Items.Length, _itemsCountMax);
 
             int i = 0;
             foreach (var item in itemsLoaderResponse.Items)
             {
                 string errorMessage;
                 Texture2D texture;
-                if (itemsLoaderResponse.IconLoadingErrors.TryGetValue(item.Id, out errorMessage))       //If icon wasn't loaded then error message will be shown
+                //If icon wasn't loaded then error message will be shown
+                if (itemsLoaderResponse.IconLoadingErrors.TryGetValue(item.Id, out errorMessage))
                 {
                     _itemViewInitializer.DecorateItemView(itemViews[i], $"{item.Title}\n{errorMessage}", _errorIcon);
                 }

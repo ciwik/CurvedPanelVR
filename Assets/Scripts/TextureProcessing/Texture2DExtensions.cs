@@ -3,12 +3,6 @@
 namespace TextureProcessing
 {
     public static class Texture2DExtensions {
-        /// <summary>
-        /// Copy all pixels from two textures into the another one
-        /// </summary>
-        /// <param name="lower"></param>
-        /// <param name="upper"></param>
-        /// <returns></returns>
         public static Texture2D Merge(this Texture2D lower, Texture2D upper)
         {
             Texture2D result = new Texture2D(lower.width, upper.height + lower.height);

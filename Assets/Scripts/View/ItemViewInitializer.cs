@@ -8,47 +8,35 @@ namespace View
     public class ItemViewInitializer : MonoBehaviour {
 
         [SerializeField]
-        private float _angleRange = 120f;           //It is an arc length
+        private float _angleRange = 120f;           //Central angle
         [SerializeField]
-        private float _distanceToItems = 5f;        //It is raduis of drawing circle
+        private float _distanceToItems = 5f;        //Raduis of drawing circle
         [SerializeField]
         private int _quadPolygonsPerSegment = 25;   //Count of quad polygons for each item
         [SerializeField]
         private GameObject _itemPrefab;
 
-        public int ItemsCount { get; set; }
         public Vector3 Center { get; set; }
 
         private float _anglePerItem;
-        private TextToImageConverter _textToImageConverter;
+        private TextRenderer _textRenderer;
 
         void Awake()
         {
-            _textToImageConverter = FindObjectOfType<TextToImageConverter>();
+            _textRenderer = FindObjectOfType<TextRenderer>();
         }
 
-        public ItemView[] CreateItemViews(int itemsCount)
+        public ItemView[] CreateItemViews(int itemsCount, int itemsCountMax)
         {
-            ItemsCount = itemsCount;
-            _anglePerItem = _angleRange / ItemsCount;
+            _anglePerItem = _angleRange / itemsCountMax;
 
             List<ItemView> result = new List<ItemView>();
-
-            float angle = 0;                    //If the number of items is odd, then first items should be drawn on zero angle
-
-            if (ItemsCount % 2 == 0)
-            {
-                angle = _anglePerItem / 2;
-            }
-
-            int iterationsCount = ItemsCount / 2 + (ItemsCount % 2 == 0 ? 0 : 1);
-            for (int i = 0; i < iterationsCount; i++, angle += _anglePerItem)
+            
+            float angle = -_anglePerItem * (itemsCount - 1) / 2f;
+            for (int i = 0; i < itemsCount; i++)
             {
                 result.Add(InitItemView(angle));
-                if (angle > 0f)
-                {
-                    result.Add(InitItemView(-angle));
-                }
+                angle += _anglePerItem;
             }
 
             return result.ToArray();
@@ -56,11 +44,8 @@ namespace View
 
         private ItemView InitItemView(float angle)
         {
-            Vector3 direction = _distanceToItems * 
-                                new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), 
-                                        0, 
-                                        Mathf.Cos(Mathf.Abs(angle * Mathf.Deg2Rad)))
-                                    .normalized;
+            Vector2 rotatedRadius = GetRotatedRadiusByAngle(angle);
+            Vector3 direction = new Vector3(rotatedRadius.x, 0, rotatedRadius.y);
             Vector3 itemPosition = Center + direction;
             GameObject instance = Instantiate(_itemPrefab);
             instance.transform.position = Center;
@@ -76,37 +61,44 @@ namespace View
             float textureRatio = texture.height / (float) texture.width;
 
             Mesh mesh = CreateMesh(_anglePerItem, _distanceToItems, textureRatio);        
-            MeshRenderer meshRenderer = itemView.gameObject.GetComponent<MeshRenderer>();
+            MeshRenderer meshRenderer = itemView.transform.GetComponent<MeshRenderer>();
             meshRenderer.materials[0].SetTexture(Values.TextureMaterialPropertyName, texture);
-            itemView.gameObject.GetComponent<MeshFilter>().mesh = mesh;        
+            MeshFilter meshFilter = itemView.transform.GetComponent<MeshFilter>();
+            meshFilter.mesh = mesh;        
         }
 
         private Texture2D CreateTextureByText(string text, int width)
         {
-            return _textToImageConverter.RenderTextAsTexture(text, width);
+            return _textRenderer.RenderTextAsTexture(text, width);
         }
 
-        private Vector2 GetRotatedRadius(float t)
+        private Vector2 GetRotatedRadiusByLerpParameter(float t)
         {
             //Use local angles of slice
             float leftAngle = -_anglePerItem / 2f;
             float rightAngle = _anglePerItem / 2f;
             float angle = Mathf.LerpAngle(leftAngle, rightAngle, t);
 
+            return GetRotatedRadiusByAngle(angle);
+        }
+
+        private Vector2 GetRotatedRadiusByAngle(float angle)
+        {           
             float cos = Mathf.Cos(angle * Mathf.Deg2Rad);
             float sin = Mathf.Sin(angle * Mathf.Deg2Rad);
 
             Vector2 up = new Vector2(0, _distanceToItems);
-            return new Vector2(up.x * cos - up.y * sin, up.x * sin + up.y * cos);   //Rotate vector by angle
+            //Rotate vector by angle
+            return new Vector2(up.x * cos - up.y * sin, up.x * sin + up.y * cos);
         }
 
-        private Mesh CreateMesh(float centerAngle, float radius, float ratio)
+        private Mesh CreateMesh(float centralAngle, float radius, float ratio)
         {
             int verticesCount = 2 * _quadPolygonsPerSegment + 2;
             int trianglesCount = 3 * 2 * _quadPolygonsPerSegment;
 
             float D = 2 * radius;                                   //Diameter
-            float alpha = centerAngle * Mathf.Deg2Rad / 2f;         //Angle
+            float alpha = centralAngle * Mathf.Deg2Rad / 2f;        //Angle
             float L = D * alpha;                                    //Arc length
             float X = D * Mathf.Sin(alpha);                         //Chord
             float dX = X / _quadPolygonsPerSegment;                 //Chord step
@@ -121,7 +113,7 @@ namespace View
             float x = 0;
             for (int i = 0; i < _quadPolygonsPerSegment; i++, x += dX)
             {
-                Vector2 rotatedRadius = GetRotatedRadius(x / X);
+                Vector2 rotatedRadius = GetRotatedRadiusByLerpParameter(x / X);
                 vertices[2 * i] = new Vector3(rotatedRadius.x, 0, rotatedRadius.y);
                 vertices[2 * i + 1] = new Vector3(rotatedRadius.x, Y, rotatedRadius.y);
 
@@ -138,7 +130,7 @@ namespace View
             }
 
             //Right border should be added outside of cycle
-            Vector2 rotatedRadiusForRightBorder = GetRotatedRadius(1);
+            Vector2 rotatedRadiusForRightBorder = GetRotatedRadiusByLerpParameter(1);
             vertices[verticesCount - 2] = new Vector3(rotatedRadiusForRightBorder.x, 0, rotatedRadiusForRightBorder.y);
             vertices[verticesCount - 1] = new Vector3(rotatedRadiusForRightBorder.x, Y, rotatedRadiusForRightBorder.y);
 
