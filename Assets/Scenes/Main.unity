@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c6eb2a524576c245a90088abe2053d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemsCountMin: 5
+  _itemsCountMin: 2
   _itemsCountMax: 7
   _errorIcon: {fileID: 2800000, guid: 5316dd6ee9d5c7549805417bafbd23e7, type: 3}
 --- !u!20 &282840813

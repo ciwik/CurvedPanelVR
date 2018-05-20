@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using System.Collections;
+using Common;
 using Data.Loading;
 using UnityEngine;
 using View;
@@ -43,7 +44,13 @@ namespace Player
 
         private void OnItemsLoaded(ItemsLoaderResponse itemsLoaderResponse)
         {
+            StartCoroutine(InitItemViewsRoutine(itemsLoaderResponse));
+        }
+
+        private IEnumerator InitItemViewsRoutine(ItemsLoaderResponse itemsLoaderResponse)
+        {
             var itemViews = _itemViewInitializer.CreateItemViews(itemsLoaderResponse.Items.Length, _itemsCountMax);
+            yield return null;
 
             int i = 0;
             foreach (var item in itemsLoaderResponse.Items)
@@ -60,6 +67,7 @@ namespace Player
                     _itemViewInitializer.DecorateItemView(itemViews[i], item.Title, texture);
                 }
                 i++;
+                yield return null;
             }
 
             _loadingIndicator.enabled = false;
